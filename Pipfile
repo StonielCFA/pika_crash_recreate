@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pika = "*"
+
+[dev-packages]
+black = "*"
+pyright = "*"
+
+[requires]
+python_version = "3.12"
+
+[scripts]
+black = "python -m black main.py publisher.py message_handler.py"
+main = "python main.py"
+publisher = "python publisher.py"
