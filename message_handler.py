@@ -7,11 +7,9 @@ import queue
 class PikaThreadHandler(threading.Thread):
     def __init__(self, queue_a) -> None:
         super(PikaThreadHandler, self).__init__()
-        self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters("localhost")
-        )
-        self.channel = self.connection.channel()
         self.queue_a = queue_a
+        self.exchange_name = "amq.topic"
+        self.routing_key = "a.b.c"
 
     def callback_a(self, ch, method, properties, body):
         msg = body.decode("utf-8")
@@ -19,13 +17,15 @@ class PikaThreadHandler(threading.Thread):
         self.queue_a.put(result)
 
     def run(self):
-        exchange_name = "amq.topic"
-        routing_key = "a.b.c"
+        self.connection = pika.BlockingConnection(
+            pika.ConnectionParameters("localhost")
+        )
+        self.channel = self.connection.channel()
 
         res = self.channel.queue_declare(queue="", exclusive=True)
         queue_name = res.method.queue
         self.channel.queue_bind(
-            exchange=exchange_name, queue=queue_name, routing_key=routing_key
+            exchange=self.exchange_name, queue=queue_name, routing_key=self.routing_key
         )
         self.channel.basic_consume(
             queue=queue_name, on_message_callback=self.callback_a, auto_ack=True

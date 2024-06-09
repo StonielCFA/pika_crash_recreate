@@ -1,4 +1,12 @@
+import logging
 import pika
+
+LOG_FORMAT = (
+    "%(levelname) -10s %(asctime)s %(name) -30s %(funcName) "
+    "-35s %(lineno) -5d: %(message)s"
+)
+LOGGER = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
 
 connection = pika.BlockingConnection(pika.ConnectionParameters("localhost"))
 channel = connection.channel()
@@ -16,7 +24,7 @@ while True:
     )
 
     print(f"Message '{user_input}' published to '{routing_key}' queue")
-    connection.process_data_events(1)
+    connection.process_data_events(5)
 
 
 # Close the connection

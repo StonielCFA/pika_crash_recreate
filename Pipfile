@@ -16,3 +16,4 @@ python_version = "3.12"
 [scripts]
 black = "python -m black main.py publisher.py message_handler.py"
 main = "python main.py"
+publisher = "python publisher.py"

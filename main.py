@@ -22,22 +22,13 @@ class DataIngestor:
         self.q = None
 
     # Start the Pika thread before multiprocessing
-    def start_broken(self):
+    def start_pika(self):
         self.mh.start_thread()
         self.q = multiprocessing.Queue(60)
         process = multiprocessing.Process(target=self.foo)
         process.start()
 
-    # Start the Pika thread after multiprocessing
-    def start_working(self):
-        self.q = multiprocessing.Queue(60)
-        process = multiprocessing.Process(target=self.foo)
-        process.start()
-        self.mh.start_thread()
-
-    def foo(
-        self,
-    ):
+    def foo(self):
         while True:
             print("foo")
             time.sleep(10)
@@ -54,10 +45,7 @@ class DataIngestor:
 def main():
     print("[INFO] Begin DataIngestor")
     di = DataIngestor()
-
-    # di.start_working()
-    di.start_broken()
-
+    di.start_pika()
     di.run()
     logging.info("[INFO] end startup.py ")
 
